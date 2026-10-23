@@ -14,12 +14,6 @@ go run .
 
 Then open <http://localhost:8080>. Set `PORT` to use another port.
 
-## Test
-
-```sh
-go test ./...
-```
-
 ## Pages
 
 | Route | What it shows |
