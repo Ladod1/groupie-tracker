@@ -1,4 +1,3 @@
-// Package handlers serves the website's pages.
 package handlers
 
 import (
@@ -14,13 +13,11 @@ import (
 	"groupie-tracker/internal/api"
 )
 
-// DataSource is where the handlers get artist data from.
 type DataSource interface {
 	Artist(id int) (api.ArtistDetail, error)
 	Search(query string) ([]api.SearchResult, error)
 }
 
-// App holds what the handlers need to build responses.
 type App struct {
 	data DataSource
 	tmpl *template.Template
@@ -37,7 +34,6 @@ type errorPage struct {
 	Message string
 }
 
-// New parses the HTML templates in templateDir and returns an App.
 func New(data DataSource, templateDir string) (*App, error) {
 	tmpl, err := template.ParseGlob(filepath.Join(templateDir, "*.html"))
 	if err != nil {
@@ -46,7 +42,6 @@ func New(data DataSource, templateDir string) (*App, error) {
 	return &App{data: data, tmpl: tmpl}, nil
 }
 
-// Routes returns the site's HTTP handler. Static files are served from staticDir.
 func (a *App) Routes(staticDir string) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", a.home)
@@ -55,7 +50,6 @@ func (a *App) Routes(staticDir string) http.Handler {
 	return a.recoverPanic(mux)
 }
 
-// home shows every artist, or only those matching ?q= when given.
 func (a *App) home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		a.renderError(w, http.StatusNotFound, "The page you are looking for does not exist.")
@@ -76,7 +70,6 @@ func (a *App) home(w http.ResponseWriter, r *http.Request) {
 	a.render(w, http.StatusOK, "index.html", homePage{Query: query, Results: results})
 }
 
-// artist shows one artist's details, chosen by ?id=.
 func (a *App) artist(w http.ResponseWriter, r *http.Request) {
 	if !allowGet(w, r) {
 		a.renderError(w, http.StatusMethodNotAllowed, "Only GET requests are allowed on this page.")
@@ -102,7 +95,6 @@ func (a *App) artist(w http.ResponseWriter, r *http.Request) {
 	a.render(w, http.StatusOK, "artist.html", detail)
 }
 
-// static serves files from dir, without directory listings.
 func (a *App) static(dir string) http.Handler {
 	root := http.Dir(dir)
 	files := http.StripPrefix("/static/", http.FileServer(root))
@@ -128,8 +120,6 @@ func (a *App) static(dir string) http.Handler {
 	})
 }
 
-// recoverPanic turns an unexpected panic into a 500 page instead of a
-// dropped connection.
 func (a *App) recoverPanic(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
@@ -142,8 +132,6 @@ func (a *App) recoverPanic(next http.Handler) http.Handler {
 	})
 }
 
-// render executes a template into a buffer first, so a template error
-// becomes a clean 500 page instead of a half-written response.
 func (a *App) render(w http.ResponseWriter, code int, name string, data any) {
 	var buf bytes.Buffer
 	if err := a.tmpl.ExecuteTemplate(&buf, name, data); err != nil {
@@ -169,8 +157,6 @@ func (a *App) renderError(w http.ResponseWriter, code int, message string) {
 	buf.WriteTo(w)
 }
 
-// allowGet reports whether r is a GET or HEAD request, and sets the
-// Allow header when it is not.
 func allowGet(w http.ResponseWriter, r *http.Request) bool {
 	if r.Method == http.MethodGet || r.Method == http.MethodHead {
 		return true

@@ -49,8 +49,6 @@ main {
     padding: 24px 16px;
 }
 
-/* Home page */
-
 .hero h1 {
     margin: 0 0 16px;
 }
@@ -140,8 +138,6 @@ main {
     color: var(--muted);
 }
 
-/* Artist page */
-
 .back {
     display: inline-block;
     margin-bottom: 16px;
@@ -230,8 +226,6 @@ th {
     background: var(--surface-2);
     font-size: 0.85rem;
 }
-
-/* Error page */
 
 .error {
     text-align: center;

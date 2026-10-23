@@ -13,17 +13,12 @@ import (
 	"time"
 )
 
-// DefaultBaseURL is the address of the Groupie Trackers API.
 const DefaultBaseURL = "https://groupietrackers.herokuapp.com/api"
 
-// maxBodySize limits how much data is read from one API response.
 const maxBodySize = 10 << 20
 
-// ErrNotFound is returned when an artist does not exist.
 var ErrNotFound = errors.New("artist not found")
 
-// Client fetches data from the API and caches it for a while,
-// so every page view does not need a new network call.
 type Client struct {
 	baseURL string
 	http    *http.Client
@@ -35,7 +30,6 @@ type Client struct {
 	fetchedAt time.Time
 }
 
-// NewClient returns a Client that caches API data for ttl.
 func NewClient(baseURL string, ttl time.Duration) *Client {
 	return &Client{
 		baseURL: strings.TrimRight(baseURL, "/"),
@@ -44,7 +38,6 @@ func NewClient(baseURL string, ttl time.Duration) *Client {
 	}
 }
 
-// Artist returns one artist with their concerts, or ErrNotFound.
 func (c *Client) Artist(id int) (ArtistDetail, error) {
 	artists, relations, err := c.data()
 	if err != nil {
@@ -63,9 +56,6 @@ func (c *Client) Artist(id int) (ArtistDetail, error) {
 	return ArtistDetail{}, ErrNotFound
 }
 
-// Search returns the artists matching query by name, member, creation
-// year, first album date or concert location. An empty query returns
-// every artist.
 func (c *Client) Search(query string) ([]SearchResult, error) {
 	artists, relations, err := c.data()
 	if err != nil {
@@ -83,7 +73,6 @@ func (c *Client) Search(query string) ([]SearchResult, error) {
 	return results, nil
 }
 
-// matchArtist reports whether a matches q and describes what matched.
 func matchArtist(a Artist, rel Relation, q string) (string, bool) {
 	if q == "" || strings.Contains(strings.ToLower(a.Name), q) {
 		return "", true
@@ -108,9 +97,6 @@ func matchArtist(a Artist, rel Relation, q string) (string, bool) {
 	return "", false
 }
 
-// data returns cached API data, refreshing it when it is older than
-// the TTL. If a refresh fails but older data exists, the old data is
-// used so the site keeps working while the API is down.
 func (c *Client) data() ([]Artist, map[int]Relation, error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()

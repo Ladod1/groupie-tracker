@@ -1,5 +1,3 @@
-// Command groupie-tracker runs a website showing bands, artists and
-// their concerts, using data from the Groupie Trackers API.
 package main
 
 import (
