@@ -1,0 +1,28 @@
+{{template "head" "Artists"}}
+<section class="hero">
+    <h1>Artists &amp; Bands</h1>
+    <form class="search" action="/" method="get" role="search">
+        <input type="search" name="q" value="{{.Query}}"
+               placeholder="Search by artist, member, location, year…"
+               autocomplete="off" aria-label="Search artists">
+        <button type="submit">Search</button>
+        {{if .Query}}<a class="clear" href="/">Clear</a>{{end}}
+    </form>
+    <p class="result-count">{{len .Results}} artist(s)</p>
+</section>
+
+<section class="grid">
+    {{range .Results}}
+    <a class="card" href="/artist?id={{.ID}}">
+        <img src="{{.Image}}" alt="{{.Name}}" loading="lazy">
+        <div class="card-body">
+            <h2>{{.Name}}</h2>
+            {{if .Match}}<p class="match">{{.Match}}</p>{{end}}
+        </div>
+    </a>
+    {{else}}
+    <p class="empty">No artists match your search.</p>
+    {{end}}
+</section>
+
+{{template "foot"}}

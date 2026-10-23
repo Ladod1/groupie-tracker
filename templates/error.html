@@ -1,0 +1,8 @@
+{{template "head" .Status}}
+<section class="error">
+    <p class="error-code">{{.Code}}</p>
+    <h1>{{.Status}}</h1>
+    <p>{{.Message}}</p>
+    <a href="/" class="button">Back to all artists</a>
+</section>
+{{template "foot"}}

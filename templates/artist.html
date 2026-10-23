@@ -1,0 +1,42 @@
+{{template "head" .Name}}
+<a href="/" class="back">&larr; All artists</a>
+
+<article class="artist">
+    <img class="artist-image" src="{{.Image}}" alt="{{.Name}}">
+
+    <div class="artist-info">
+        <h1>{{.Name}}</h1>
+        <dl class="facts">
+            <div><dt>Created</dt><dd>{{.CreationDate}}</dd></div>
+            <div><dt>First album</dt><dd>{{.FirstAlbum}}</dd></div>
+            <div><dt>Members</dt><dd>{{len .Members}}</dd></div>
+        </dl>
+
+        <h2>Members</h2>
+        <ul class="members">
+            {{range .Members}}<li>{{.}}</li>{{end}}
+        </ul>
+    </div>
+</article>
+
+<section class="concerts">
+    <h2>Concerts</h2>
+    {{if .Concerts}}
+    <table>
+        <thead>
+            <tr><th>Location</th><th>Dates</th></tr>
+        </thead>
+        <tbody>
+            {{range .Concerts}}
+            <tr>
+                <td>{{.Location}}</td>
+                <td>{{range .Dates}}<span class="date">{{.}}</span>{{end}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    {{else}}
+    <p class="empty">No concerts listed.</p>
+    {{end}}
+</section>
+{{template "foot"}}
